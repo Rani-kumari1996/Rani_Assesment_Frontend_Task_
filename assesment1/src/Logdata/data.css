@@ -1,0 +1,14 @@
+
+table, td, th {
+    padding: 8px
+  }
+  table {
+    width: 100%;
+  }
+  td ,th{
+    text-align: center;
+  }
+  Pagination {
+    float: left;
+  }
+  
