@@ -37,8 +37,7 @@ const Alldata = () => {
         getCount(1, res.data.result.auditLog);
       })
       .catch((err) => {
-        console.log(err.response);
-        // toast.error(err.response.error);
+        //toast.error(err.response.error);
       });
   };
 
@@ -61,88 +60,44 @@ const Alldata = () => {
     }
   };
 
-  const sortByLogId = (id) => {
-    const result = totalData.sort((x, y) => x.logId - y.logId);
-    if (flag.user) {
-      result.reverse();
+  const sort = (id) => {
+    if (id === "logId" || id === "companyId" || id === "applicationId") {
+      const result = totalData.sort((x, y) => x[id] - y[id]);
+      if (flag.user) {
+        result.reverse();
+      }
+      setDatas(result);
+      settotalPage(
+        Array.from({ length: Math.ceil(result.length / 10) }, (v, i) => i + 1)
+      );
+      getCount(1, result);
+      setflag({ user: !flag.user });
+    } else if (id === "creationTimestamp") {
+      const result = totalData.sort(
+        (x, y) =>
+          new Date(x["creationTimestamp"]).getTime() -
+          new Date(y["creationTimestamp"]).getTime()
+      );
+      setDatas(result);
+      settotalPage(
+        Array.from({ length: Math.ceil(result.length / 10) }, (v, i) => i + 1)
+      );
+      getCount(1, result);
+      setflag({ user: !flag.user });
+    } else {
+      const result = totalData.sort(
+        (x, y) => x[id] && x[id].localeCompare(y[id])
+      );
+      if (flag.user) {
+        result.reverse();
+      }
+      setDatas(result);
+      settotalPage(
+        Array.from({ length: Math.ceil(result.length / 10) }, (v, i) => i + 1)
+      );
+      getCount(1, result);
+      setflag({ user: !flag.user });
     }
-    setDatas(result);
-    settotalPage(
-      Array.from({ length: Math.ceil(result.length / 10) }, (v, i) => i + 1)
-    );
-    getCount(1, result);
-    setflag({ user: !flag.user });
-  };
-
-  const sortApplicationType = (id) => {
-    const result = totalData.sort(
-      (x, y) =>
-        x.applicationType && x.applicationType.localeCompare(y.applicationType)
-    );
-    if (flag.user) {
-      result.reverse();
-    }
-    setDatas(result);
-    settotalPage(
-      Array.from({ length: Math.ceil(result.length / 10) }, (v, i) => i + 1)
-    );
-    getCount(1, result);
-    setflag({ user: !flag.user });
-  };
-  const sortApplicationId = (id) => {
-    const result = totalData.sort((x, y) => x.applicationId - y.applicationId);
-    if (flag.user) {
-      result.reverse();
-    }
-    setDatas(result);
-    settotalPage(
-      Array.from({ length: Math.ceil(result.length / 10) }, (v, i) => i + 1)
-    );
-    getCount(1, result);
-    setflag({ user: !flag.user });
-  };
-
-  const sortByActionType = (id) => {
-    const result = totalData.sort(
-      (x, y) => x.actionType && x.actionType.localeCompare(y.actionType)
-    );
-    if (flag.user) {
-      result.reverse();
-    }
-    setDatas(result);
-    settotalPage(
-      Array.from({ length: Math.ceil(result.length / 10) }, (v, i) => i + 1)
-    );
-    getCount(1, result);
-    setflag({ user: !flag.user });
-  };
-
-  const sortByCompanyId = (id) => {
-    const result = totalData.sort((x, y) => x.companyId - y.companyId);
-    if (flag.user) {
-      result.reverse();
-    }
-    setDatas(result);
-    settotalPage(
-      Array.from({ length: Math.ceil(result.length / 10) }, (v, i) => i + 1)
-    );
-    getCount(1, result);
-    setflag({ user: !flag.user });
-  };
-
-  const sortByDate = (id) => {
-    const result = totalData.sort((x, y) =>
-      x.creationTimestamp.localeCompare(y.creationTimestamp)
-    );
-    if (flag.user) {
-      result.reverse();
-    }
-    setDatas(result);
-    settotalPage(
-      Array.from({ length: Math.ceil(result.length / 10) }, (v, i) => i + 1)
-    );
-    getCount(1, result);
-    setflag({ user: !flag.user });
   };
 
   const filterUsers = async (filterby, search) => {
@@ -251,42 +206,42 @@ const Alldata = () => {
                       Log Id
                       <i
                         className="fa fa-sort"
-                        onClick={() => sortByLogId()}
+                        onClick={() => sort("logId")}
                       ></i>
                     </th>
                     <th>
                       Application Type
                       <i
                         className="fa fa-sort"
-                        onClick={() => sortApplicationType()}
+                        onClick={() => sort("applicationType")}
                       ></i>
                     </th>
                     <th>
                       Application Id
                       <i
                         className="fa  fa-sort"
-                        onClick={() => sortApplicationId()}
+                        onClick={() => sort("applicationId")}
                       ></i>
                     </th>
                     <th>
                       Company Id
                       <i
                         className="fa fa-sort"
-                        onClick={() => sortByCompanyId()}
+                        onClick={() => sort("companyId")}
                       ></i>
                     </th>
                     <th>
                       Action Type
                       <i
                         className="fa  fa-sort"
-                        onClick={() => sortByActionType()}
+                        onClick={() => sort("actionType")}
                       ></i>
                     </th>
                     <th>
                       Date : Time
                       <i
                         className="fa fa-sort"
-                        onClick={() => sortByDate()}
+                        onClick={() => sort("creationTimestamp")}
                       ></i>
                     </th>
                   </tr>
@@ -322,7 +277,11 @@ const Alldata = () => {
                         </td>
 
                         <td>
-                          <div>{data.creationTimestamp}</div>
+                          <div>
+                            {new Date(
+                              data.creationTimestamp
+                            ).toLocaleDateString("es-CL")}
+                          </div>
                         </td>
                       </tr>
                     );
@@ -337,7 +296,6 @@ const Alldata = () => {
                     onClick={() => getCount(currentPage - 1, totalData)}
                   >
                     <span aria-hidden="true">«</span>
-                    <span className="sr-only">{"Previous"}</span>
                   </PaginationLink>
                 </PaginationItem>
                 {totalPage.map((ele) => (
@@ -352,7 +310,6 @@ const Alldata = () => {
                     onClick={() => getCount(currentPage + 1, totalData)}
                   >
                     <span aria-hidden="true">»</span>
-                    <span className="sr-only">{"Next"}</span>
                   </PaginationLink>
                 </PaginationItem>
               </Pagination>

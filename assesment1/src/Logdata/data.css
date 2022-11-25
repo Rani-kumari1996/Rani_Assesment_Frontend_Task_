@@ -11,4 +11,10 @@ table, td, th {
   Pagination {
     float: left;
   }
+  .option1 {
+    height: 38px;
+    width: 180px;
+    border-color: lightgrey;
+    border-radius: 5px;
+  }
   

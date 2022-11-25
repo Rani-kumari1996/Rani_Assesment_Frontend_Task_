@@ -1,30 +1,63 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Container, Row, Col, Input, Label, FormGroup } from "reactstrap";
+
 const SearchData = (props) => {
+  const navigate = useNavigate();
+  const [actionType, setActionType] = useState();
+  const [applicationType, setApplicationType] = useState();
+  const [applicationId, setApplicationId] = useState();
   const [search, setSearch] = useState({ start: "", end: "" });
-  // const [filter, setfilter] = useState("");
+
+  const buttonSubmit = () => {
+    if (actionType) {
+      props.filterUsers("actionType", actionType);
+    }
+    else if (applicationType) {
+      props.filterUsers("applicationType", applicationType);
+    }
+    else if (applicationId) {
+      props.filterApplication("applicationId", applicationId);
+    }
+    else if (search.start !== "" && search.end !== "") {
+      props.filterdate(search)
+    }
+
+    let search1 = actionType ? `actionType=${actionType}` : applicationType ? `applicationType=${applicationType}` : applicationId ? `applicationId=${applicationId}` : search.start ? `startDate =${search.start},${search.end}` : 'No data found'
+    navigate({ pathname: "/", search: `${search1} ` })
+  }
 
   return (
     <Container>
       <Row>
         <Col className="mb-3">
           <Label>{"ActionType"}</Label>
-          <Input
-            className="form-control"
-            type="text"
-            onChange={(e) => props.filterUsers("actionType", e.target.value)}
-          />
+          <select value={actionType} onChange={(e) => setActionType(e.target.value)}
+            className="option1">
+            <option value="" />
+            {props.datas.map((val, i) => (
+              <option key={i} value={val.actionType}>
+                {val.actionType}
+              </option>
+            ))}
+          </select>
         </Col>
-        <Col className="mb-3">
+        <Col className="mb-3 option">
           <FormGroup>
             <Label>{"ApplicationTypes"}</Label>
-            <Input
-              className="form-control"
-              type="text"
-              onChange={(e) =>
-                props.filterUsers("applicationType", e.target.value)
-              }
-            />
+            <select value={applicationType} onChange={(e) => setApplicationType(e.target.value)}
+              className="option1">
+              <option value="" />
+              {props.datas.map((val, i) => {
+                if (val.applicationType !== null) {
+                  return (
+                    <option key={i} value={val.applicationType}>
+                      {val.applicationType}
+                    </option>
+                  )
+                }
+              })}
+            </select>
           </FormGroup>
         </Col>
         <Col className="mb-3">
@@ -33,9 +66,7 @@ const SearchData = (props) => {
             <Input
               className="form-control"
               type="text"
-              onChange={(e) =>
-                props.filterApplication("applicationId", e.target.value)
-              }
+              onChange={(e) => setApplicationId(e.target.value)}
             />
           </FormGroup>
         </Col>
@@ -65,20 +96,11 @@ const SearchData = (props) => {
           <button
             type="button"
             class="btn btn-primary my-4"
-            onClick={() => props.filterdate(search)}
+            onClick={() => buttonSubmit()}
           >
             Search logger
           </button>
         </Col>
-
-        {/* <FormGroup>
-            <Input
-              className="form-control"
-              name="alias"
-              type="Submit"
-              onClick={() => props.filterdate(search)}
-            />
-          </FormGroup> */}
       </Row>
     </Container>
   );
