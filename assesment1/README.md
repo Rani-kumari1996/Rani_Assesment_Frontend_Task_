@@ -24,4 +24,4 @@ It correctly bundles React in production mode and optimizes the build for the be
 ### deployed url
 
 
-### https://gorgeous-cendol-7013b9.netlify.app/
+### https://courageous-pasca-01de6d.netlify.app/
