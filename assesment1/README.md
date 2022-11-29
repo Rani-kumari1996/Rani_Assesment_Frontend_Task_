@@ -21,5 +21,5 @@ Open http://localhost:3000 to view it in your browser.
 
 You can also filter fields using query params in url like this
 
-http://localhost:3000/logger?applicationType=ADD_COMPANY&actionType=ADD_EMPLOYEE&fromDate=2021-11-1&toDate=2021-11-30
+http://localhost:3000/?applicationType=ADD_COMPANY&actionType=ADD_EMPLOYEE&fromDate=2021-11-1&toDate=2021-11-30
 You can test project like
