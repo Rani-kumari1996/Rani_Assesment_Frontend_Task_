@@ -12,30 +12,46 @@ const SearchData = (props) => {
   const buttonSubmit = () => {
     if (actionType) {
       props.filterUsers("actionType", actionType);
-    }
-    else if (applicationType) {
+    } else if (applicationType) {
       props.filterUsers("applicationType", applicationType);
-    }
-    else if (applicationId) {
+    } else if (applicationId) {
       props.filterApplication("applicationId", applicationId);
-    }
-    else if (search.start !== "" && search.end !== "") {
-      props.filterdate(search)
+    } else if (search.start !== "" && search.end !== "") {
+      props.filterdate(search);
     }
 
-    let search1 = actionType ? `actionType=${actionType}` : applicationType ? `applicationType=${applicationType}` : applicationId ? `applicationId=${applicationId}` : search.start ? `startDate =${search.start},${search.end}` : 'No data found'
-    navigate({ pathname: "/", search: `${search1} ` })
-  }
+    let search1 = actionType
+      ? `actionType=${actionType}`
+      : applicationType
+      ? `applicationType=${applicationType}`
+      : applicationId
+      ? `applicationId=${applicationId}`
+      : search.start
+      ? `startDate =${search.start},${search.end}`
+      : "No data found";
+    navigate({ pathname: "/", search: `${search1} ` });
+  };
 
+  const ids = props.totalData.map((val) => val.actionType);
+  const filtered = props.totalData.filter(
+    ({ actionType }, index) => !ids.includes(actionType, index + 1)
+  );
+  const names = props.totalData.map((val) => val.applicationType);
+  const filteredNames = props.totalData.filter(
+    ({ applicationType }, index) => !names.includes(applicationType, index + 1)
+  );
   return (
     <Container>
       <Row>
         <Col className="mb-3">
           <Label>{"ActionType"}</Label>
-          <select value={actionType} onChange={(e) => setActionType(e.target.value)}
-            className="option1">
+          <select
+            value={actionType}
+            onChange={(e) => setActionType(e.target.value)}
+            className="option1"
+          >
             <option value="" />
-            {props.datas.map((val, i) => (
+            {filtered.map((val, i) => (
               <option key={i} value={val.actionType}>
                 {val.actionType}
               </option>
@@ -45,16 +61,19 @@ const SearchData = (props) => {
         <Col className="mb-3 option">
           <FormGroup>
             <Label>{"ApplicationTypes"}</Label>
-            <select value={applicationType} onChange={(e) => setApplicationType(e.target.value)}
-              className="option1">
+            <select
+              value={applicationType}
+              onChange={(e) => setApplicationType(e.target.value)}
+              className="option1"
+            >
               <option value="" />
-              {props.datas.map((val, i) => {
+              {filteredNames.map((val, i) => {
                 if (val.applicationType !== null) {
                   return (
                     <option key={i} value={val.applicationType}>
                       {val.applicationType}
                     </option>
-                  )
+                  );
                 }
               })}
             </select>

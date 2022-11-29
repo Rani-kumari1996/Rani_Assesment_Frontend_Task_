@@ -1,4 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   Container,
   Row,
@@ -20,11 +21,16 @@ const Alldata = () => {
   const [flag, setflag] = useState({
     user: false,
   });
+  const location = useLocation();
+  useEffect(() => {
+    fetchLogs();
+  }, []);
+
   const fetchLogs = async () => {
     await axios
       .get("https://run.mocky.io/v3/a2fbc23e-069e-4ba5-954c-cd910986f40f")
       .then((res) => {
-        console.log(res, "sdasds");
+        // console.log(res, "sdasds");
         setDatas(res.data.result.auditLog);
         setTotalData(res.data.result.auditLog);
         setDataHolder(res.data.result.auditLog);
@@ -35,15 +41,41 @@ const Alldata = () => {
           )
         );
         getCount(1, res.data.result.auditLog);
+        console.log(location.search);
+
+        if (location.search) {
+          let temp = JSON.parse(
+            '{"' +
+              decodeURI(
+                location.search
+                  .substring(1)
+                  .replace(/&/g, '","')
+                  .replace(/=/g, '":"')
+              ) +
+              '"}'
+          );
+          if (Object.keys(temp).length > 1) {
+            filterdate(temp, res.data.result.auditLog);
+          } else {
+            console.log("else condition");
+            filterUsers(
+              Object.keys(temp)[0],
+              temp[Object.keys(temp)],
+              res.data.result.auditLog
+            );
+          }
+          filterApplication(
+            Object.keys(temp)[0],
+            temp[Object.keys(temp)],
+            res.data.result.auditLog
+          );
+        }
       })
       .catch((err) => {
-        //toast.error(err.response.error);
+        console.log(err.response);
+        // toast.error(err.response.error);
       });
   };
-
-  useEffect(() => {
-    fetchLogs();
-  }, []);
 
   const getCount = (id, data) => {
     console.log(data, id, "data");
@@ -78,6 +110,9 @@ const Alldata = () => {
           new Date(x["creationTimestamp"]).getTime() -
           new Date(y["creationTimestamp"]).getTime()
       );
+      if (flag.user) {
+        result.reverse();
+      }
       setDatas(result);
       settotalPage(
         Array.from({ length: Math.ceil(result.length / 10) }, (v, i) => i + 1)
@@ -100,11 +135,12 @@ const Alldata = () => {
     }
   };
 
-  const filterUsers = async (filterby, search) => {
+  const filterUsers = async (filterby, search, urlData = []) => {
+    const temp = urlData.length == 0 ? dataHolder : urlData;
     search = search.trim().toLowerCase();
-    console.log(filterby, search, totalData, "filter by search");
+    console.log(filterby, search, urlData, "filter by search");
     if (search !== "") {
-      const data = dataHolder.filter((ele) => {
+      const data = temp.filter((ele) => {
         if (ele[filterby] && ele[filterby].toLowerCase().includes(search)) {
           return ele;
         }
@@ -116,21 +152,19 @@ const Alldata = () => {
       );
       getCount(1, data);
     } else {
-      setTotalData(dataHolder);
+      setTotalData(temp);
       settotalPage(
-        Array.from(
-          { length: Math.ceil(dataHolder.length / 10) },
-          (v, i) => i + 1
-        )
+        Array.from({ length: Math.ceil(temp.length / 10) }, (v, i) => i + 1)
       );
-      getCount(1, dataHolder);
+      getCount(1, temp);
     }
   };
-  const filterApplication = async (filterby, search) => {
+  const filterApplication = async (filterby, search, urlData = []) => {
+    const temp = urlData.length == 0 ? dataHolder : urlData;
     search = search.trim();
     console.log(filterby, search, totalData, "filter by search");
     if (search !== "") {
-      const data = dataHolder.filter((ele) => {
+      const data = temp.filter((ele) => {
         if (ele[filterby] && ele[filterby].toString().includes(search)) {
           return ele;
         }
@@ -142,25 +176,23 @@ const Alldata = () => {
       );
       getCount(1, data);
     } else {
-      setTotalData(dataHolder);
+      setTotalData(temp);
       settotalPage(
-        Array.from(
-          { length: Math.ceil(dataHolder.length / 10) },
-          (v, i) => i + 1
-        )
+        Array.from({ length: Math.ceil(temp.length / 10) }, (v, i) => i + 1)
       );
-      getCount(1, dataHolder);
+      getCount(1, temp);
     }
   };
-  const filterdate = async (date) => {
+  const filterdate = async (date, urlData = true) => {
     console.log(date, "182");
+    const dateData = urlData == true ? dataHolder : urlData;
     console.log(new Date(date.start).getTime());
     console.log(new Date(date.end).getTime());
     if (date.start !== "" && date.end !== "") {
       const start = new Date(date.start).getTime();
       const end = new Date(date.end).getTime();
 
-      const data = dataHolder.filter((ele) => {
+      const data = dateData.filter((ele) => {
         if (ele["creationTimestamp"]) {
           const temp = new Date(ele["creationTimestamp"]).getTime();
           if (temp >= start && temp <= end) {
@@ -175,14 +207,11 @@ const Alldata = () => {
       );
       getCount(1, data);
     } else {
-      setTotalData(dataHolder);
+      setTotalData(dateData);
       settotalPage(
-        Array.from(
-          { length: Math.ceil(dataHolder.length / 10) },
-          (v, i) => i + 1
-        )
+        Array.from({ length: Math.ceil(dateData.length / 10) }, (v, i) => i + 1)
       );
-      getCount(1, dataHolder);
+      getCount(1, dateData);
     }
   };
   return (
@@ -193,6 +222,7 @@ const Alldata = () => {
             <div className="p-4 m-10 !important">
               <SearchData
                 datas={datas}
+                totalData={totalData}
                 filterUsers={filterUsers}
                 filterdate={filterdate}
                 filterApplication={filterApplication}
@@ -277,11 +307,7 @@ const Alldata = () => {
                         </td>
 
                         <td>
-                          <div>
-                            {new Date(
-                              data.creationTimestamp
-                            ).toLocaleDateString("es-CL")}
-                          </div>
+                          <div>{data.creationTimestamp}</div>
                         </td>
                       </tr>
                     );
