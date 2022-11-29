@@ -1,27 +1,25 @@
-# Getting Started with Create React App
+This project is deployed to below link:
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### https://aesthetic-scone-98cb60.netlify.app
 
-## Available Scripts
+Steps to run project:
 
-In the project directory, you can run:
+Clone project locally
 
-### `npm start`
+Move to project directory in command prompt
 
+Now run below command to install dependancies
 
+npm install
 
-### `npm test`
+Now, run project like
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+npm start
 
-### `npm run build`
+Runs the app in the development mode.
+Open http://localhost:3000 to view it in your browser.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+You can also filter fields using query params in url like this
 
-
-### deployed url
-
-
-### https://courageous-pasca-01de6d.netlify.app/
+http://localhost:3000/logger?applicationType=ADD_COMPANY&actionType=ADD_EMPLOYEE&fromDate=2021-11-1&toDate=2021-11-30
+You can test project like
