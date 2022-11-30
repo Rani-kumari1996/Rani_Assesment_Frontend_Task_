@@ -10,14 +10,15 @@ import {
   Table,
 } from "reactstrap";
 import axios from "axios";
-import SearchData from "./SearchData";
-import "./data.css";
-const Alldata = () => {
+import FilterData from "./FilterData";
+import "../Style/LogTable.css";
+const LogTable = () => {
   const [datas, setDatas] = useState([]);
   const [totalPage, settotalPage] = useState([]);
   const [totalData, setTotalData] = useState([]);
   const [currentPage, setcurrentPage] = useState(0);
   const [dataHolder, setDataHolder] = useState([]);
+  const [apiData, setApiData] = useState([]);
   const [flag, setflag] = useState({
     user: false,
   });
@@ -33,6 +34,7 @@ const Alldata = () => {
         // console.log(res, "sdasds");
         setDatas(res.data.result.auditLog);
         setTotalData(res.data.result.auditLog);
+        setApiData(res.data.result.auditLog);
         setDataHolder(res.data.result.auditLog);
         settotalPage(
           Array.from(
@@ -83,13 +85,15 @@ const Alldata = () => {
       { length: Math.ceil(data.length / 10) },
       (v, i) => i + 1
     );
+    console.log(temp, "86");
     if (id > 0 && temp[temp.length - 1] >= id) {
       const temp = data.filter((ele, i) => i < id * 10 && i >= id * 10 - 10);
       setcurrentPage(id);
       setDatas(temp);
-    } else {
-      setDatas(data);
     }
+    // } else {
+    //   setDatas([]);
+    // }
   };
 
   const sort = (id) => {
@@ -136,7 +140,7 @@ const Alldata = () => {
   };
 
   const filterUsers = async (filterby, search, urlData = []) => {
-    const temp = urlData.length == 0 ? dataHolder : urlData;
+    const temp = urlData.length === 0 ? dataHolder : urlData;
     search = search.trim().toLowerCase();
     console.log(filterby, search, urlData, "filter by search");
     if (search !== "") {
@@ -160,7 +164,7 @@ const Alldata = () => {
     }
   };
   const filterApplication = async (filterby, search, urlData = []) => {
-    const temp = urlData.length == 0 ? dataHolder : urlData;
+    const temp = urlData.length === 0 ? dataHolder : urlData;
     search = search.trim();
     console.log(filterby, search, totalData, "filter by search");
     if (search !== "") {
@@ -185,7 +189,7 @@ const Alldata = () => {
   };
   const filterdate = async (date, urlData = true) => {
     console.log(date, "182");
-    const dateData = urlData == true ? dataHolder : urlData;
+    const dateData = urlData === true ? dataHolder : urlData;
     console.log(new Date(date.start).getTime());
     console.log(new Date(date.end).getTime());
     if (date.start !== "" && date.end !== "") {
@@ -220,9 +224,9 @@ const Alldata = () => {
         <Row>
           <Col>
             <div className="p-4 m-10 !important">
-              <SearchData
+              <FilterData
                 datas={datas}
-                totalData={totalData}
+                apiData={apiData}
                 filterUsers={filterUsers}
                 filterdate={filterdate}
                 filterApplication={filterApplication}
@@ -235,6 +239,7 @@ const Alldata = () => {
                     <th>
                       Log Id
                       <i
+                        data-testid="log-id"
                         className="fa fa-sort"
                         onClick={() => sort("logId")}
                       ></i>
@@ -242,6 +247,7 @@ const Alldata = () => {
                     <th>
                       Application Type
                       <i
+                        data-testid="App-Type"
                         className="fa fa-sort"
                         onClick={() => sort("applicationType")}
                       ></i>
@@ -249,6 +255,7 @@ const Alldata = () => {
                     <th>
                       Application Id
                       <i
+                        data-testid="App-Id"
                         className="fa  fa-sort"
                         onClick={() => sort("applicationId")}
                       ></i>
@@ -256,6 +263,7 @@ const Alldata = () => {
                     <th>
                       Company Id
                       <i
+                        data-testid="Comp-id"
                         className="fa fa-sort"
                         onClick={() => sort("companyId")}
                       ></i>
@@ -263,6 +271,7 @@ const Alldata = () => {
                     <th>
                       Action Type
                       <i
+                        data-testid="Action-Type"
                         className="fa  fa-sort"
                         onClick={() => sort("actionType")}
                       ></i>
@@ -270,6 +279,7 @@ const Alldata = () => {
                     <th>
                       Date : Time
                       <i
+                        data-testid="Sort-Date"
                         className="fa fa-sort"
                         onClick={() => sort("creationTimestamp")}
                       ></i>
@@ -279,7 +289,7 @@ const Alldata = () => {
                 <tbody>
                   {datas.map((data, i) => {
                     return (
-                      <tr key={i}>
+                      <tr key={data.logId}>
                         <td>{data.logId}</td>
                         <td>{data.applicationType}</td>
                         <td>
@@ -319,6 +329,7 @@ const Alldata = () => {
               <Pagination aria-label="Page navigation">
                 <PaginationItem>
                   <PaginationLink
+                    data-testid="pagination-prev"
                     onClick={() => getCount(currentPage - 1, totalData)}
                   >
                     <span aria-hidden="true">«</span>
@@ -333,6 +344,7 @@ const Alldata = () => {
                 ))}
                 <PaginationItem>
                   <PaginationLink
+                    data-testid="pagination-fwd"
                     onClick={() => getCount(currentPage + 1, totalData)}
                   >
                     <span aria-hidden="true">»</span>
@@ -347,4 +359,4 @@ const Alldata = () => {
   );
 };
 
-export default Alldata;
+export default LogTable;

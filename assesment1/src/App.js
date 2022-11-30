@@ -1,11 +1,11 @@
-import Alldata from "./Logdata/Alldata";
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import LogTable from "./Component/Logdata/LogTable";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 function App() {
   return (
     <div className="App">
       <Router>
         <Routes>
-          <Route path="/" element={<Alldata />} />
+          <Route path="/" element={<LogTable />} />
         </Routes>
       </Router>
     </div>
