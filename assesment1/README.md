@@ -1,6 +1,6 @@
 This project is deployed to below link:
 
-### https://aesthetic-scone-98cb60.netlify.app
+### https://steady-cupcake-2b3fe2.netlify.app
 
 Steps to run project:
 
