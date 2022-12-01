@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Container, Row, Col, Input, Label, FormGroup } from "reactstrap";
 
 const FilterData = (props) => {
@@ -8,8 +8,8 @@ const FilterData = (props) => {
   const [applicationType, setApplicationType] = useState();
   const [applicationId, setApplicationId] = useState();
   const [search, setSearch] = useState({ start: "", end: "" });
-  let filtered;
-  let filteredNames;
+  let filtered, filteredNames, actionSearch, applicationSearch;
+  const location = useLocation();
 
   const buttonSubmit = () => {
     if (actionType) {
@@ -38,7 +38,15 @@ const FilterData = (props) => {
       : search.start
       ? `startDate =${search.start},${search.end}`
       : "No data found";
-    navigate({ pathname: "/", search: `${search1} ` });
+    if (
+      actionType === "Select ActionType" ||
+      applicationType === "Select ApplicationType"
+    ) {
+      navigate("/");
+      window.location.reload();
+    } else {
+      navigate({ pathname: "/", search: `${search1} ` });
+    }
   };
 
   if (props.apiData) {
@@ -53,6 +61,19 @@ const FilterData = (props) => {
         !names.includes(applicationType, index + 1)
     );
   }
+
+  if (location.search) {
+    const searchData = location.search;
+    const searchData1 = searchData.split("=")[0];
+    const searchData2 = searchData.split("=")[1];
+
+    if (searchData1 === "?applicationType") {
+      applicationSearch = searchData2;
+    } else if (searchData1 === "?actionType") {
+      actionSearch = searchData2;
+    }
+  }
+
   return (
     <Container>
       <Row>
@@ -64,7 +85,10 @@ const FilterData = (props) => {
             onChange={(e) => setActionType(e.target.value)}
             className="option1"
           >
-            <option value="" />
+            <option value="Select ActionType">Select ActionType</option>
+            <option value="none" selected disabled hidden>
+              {actionSearch}
+            </option>{" "}
             {props.apiData &&
               filtered.map((val, i) => (
                 <option key={i} value={val.actionType}>
@@ -82,7 +106,12 @@ const FilterData = (props) => {
               onChange={(e) => setApplicationType(e.target.value)}
               className="option1"
             >
-              <option value="" />
+              <option value="Select ApplicationType">
+                Select ApplicationType
+              </option>
+              <option value="none" selected disabled hidden>
+                {applicationSearch}
+              </option>{" "}
               {props.apiData &&
                 filteredNames.map((val, i) => {
                   if (val.applicationType !== null) {

@@ -11,7 +11,7 @@ import {
 } from "reactstrap";
 import axios from "axios";
 import FilterData from "./FilterData";
-import "../Style/LogTable.css";
+import "../../Style/LogTable.css";
 const LogTable = () => {
   const [datas, setDatas] = useState([]);
   const [totalPage, settotalPage] = useState([]);
@@ -31,7 +31,6 @@ const LogTable = () => {
     await axios
       .get("https://run.mocky.io/v3/a2fbc23e-069e-4ba5-954c-cd910986f40f")
       .then((res) => {
-        // console.log(res, "sdasds");
         setDatas(res.data.result.auditLog);
         setTotalData(res.data.result.auditLog);
         setApiData(res.data.result.auditLog);
@@ -43,8 +42,6 @@ const LogTable = () => {
           )
         );
         getCount(1, res.data.result.auditLog);
-        console.log(location.search);
-
         if (location.search) {
           let temp = JSON.parse(
             '{"' +
@@ -59,7 +56,6 @@ const LogTable = () => {
           if (Object.keys(temp).length > 1) {
             filterdate(temp, res.data.result.auditLog);
           } else {
-            console.log("else condition");
             filterUsers(
               Object.keys(temp)[0],
               temp[Object.keys(temp)],
@@ -75,17 +71,14 @@ const LogTable = () => {
       })
       .catch((err) => {
         console.log(err.response);
-        // toast.error(err.response.error);
       });
   };
 
   const getCount = (id, data) => {
-    console.log(data, id, "data");
     const temp = Array.from(
       { length: Math.ceil(data.length / 10) },
       (v, i) => i + 1
     );
-    console.log(temp, "86");
     if (id > 0 && temp[temp.length - 1] >= id) {
       const temp = data.filter((ele, i) => i < id * 10 && i >= id * 10 - 10);
       setcurrentPage(id);
@@ -142,14 +135,12 @@ const LogTable = () => {
   const filterUsers = async (filterby, search, urlData = []) => {
     const temp = urlData.length === 0 ? dataHolder : urlData;
     search = search.trim().toLowerCase();
-    console.log(filterby, search, urlData, "filter by search");
     if (search !== "") {
       const data = temp.filter((ele) => {
         if (ele[filterby] && ele[filterby].toLowerCase().includes(search)) {
           return ele;
         }
       });
-      console.log(data, "162");
       setTotalData(data);
       settotalPage(
         Array.from({ length: Math.ceil(data.length / 10) }, (v, i) => i + 1)
@@ -166,14 +157,12 @@ const LogTable = () => {
   const filterApplication = async (filterby, search, urlData = []) => {
     const temp = urlData.length === 0 ? dataHolder : urlData;
     search = search.trim();
-    console.log(filterby, search, totalData, "filter by search");
     if (search !== "") {
       const data = temp.filter((ele) => {
         if (ele[filterby] && ele[filterby].toString().includes(search)) {
           return ele;
         }
       });
-      console.log(data, "162");
       setTotalData(data);
       settotalPage(
         Array.from({ length: Math.ceil(data.length / 10) }, (v, i) => i + 1)
@@ -188,10 +177,7 @@ const LogTable = () => {
     }
   };
   const filterdate = async (date, urlData = true) => {
-    console.log(date, "182");
     const dateData = urlData === true ? dataHolder : urlData;
-    console.log(new Date(date.start).getTime());
-    console.log(new Date(date.end).getTime());
     if (date.start !== "" && date.end !== "") {
       const start = new Date(date.start).getTime();
       const end = new Date(date.end).getTime();
@@ -204,7 +190,6 @@ const LogTable = () => {
           }
         }
       });
-      console.log(data, "162");
       setTotalData(data);
       settotalPage(
         Array.from({ length: Math.ceil(data.length / 10) }, (v, i) => i + 1)
