@@ -12,41 +12,39 @@ const FilterData = (props) => {
   const location = useLocation();
 
   const buttonSubmit = () => {
-    if (actionType) {
-      props.filterUsers("actionType", actionType);
-      setActionType();
-      if (actionType && applicationType) {
-        props.filterUsers("applicationType", applicationType);
-        setApplicationType();
+    const temp = { actionType, applicationType, applicationId, search };
+    if (search) {
+      const getsearch = { ...temp, search };
+      props.handleFilter(getsearch);
+    }
+    props.handleFilter(temp);
+
+    let urlStr = "?";
+    for (let [key, value] of Object.entries(temp)) {
+      console.log("key", key, value);
+      if (value) {
+        if (urlStr.length === 1 && urlStr === "?")
+          urlStr = urlStr + key + "=" + value;
+        else urlStr = urlStr + "&" + key + "=" + value;
       }
-    } else if (applicationType) {
-      props.filterUsers("applicationType", applicationType);
-      setApplicationType();
-    } else if (applicationId) {
-      props.filterApplication("applicationId", applicationId);
-      setApplicationId();
-    } else if (search.start !== "" && search.end !== "") {
-      props.filterdate(search);
     }
 
-    let search1 = actionType
-      ? `actionType=${actionType}`
-      : applicationType
-      ? `applicationType=${applicationType}`
-      : applicationId
-      ? `applicationId=${applicationId}`
-      : search.start
-      ? `startDate =${search.start},${search.end}`
-      : "No data found";
+    if (search.start && search.end) {
+      if (urlStr.length === 1 && urlStr === "?")
+        urlStr =
+          urlStr + "startDate=" + search.start + "&endDate=" + search.end;
+      else
+        urlStr =
+          urlStr + "&startdate=" + search.start + "&toDenddatete=" + search.end;
+    }
     if (
       actionType === "Select ActionType" ||
       applicationType === "Select ApplicationType"
     ) {
       navigate("/");
-      window.location.reload();
-    } else {
-      navigate({ pathname: "/", search: `${search1} ` });
+      window.location.reload(false);
     }
+    navigate({ pathname: "/", search: `${urlStr} ` });
   };
 
   if (props.apiData) {

@@ -31,8 +31,6 @@ const LogTable = () => {
     await axios
       .get("https://run.mocky.io/v3/a2fbc23e-069e-4ba5-954c-cd910986f40f")
       .then((res) => {
-        setDatas(res.data.result.auditLog);
-        setTotalData(res.data.result.auditLog);
         setApiData(res.data.result.auditLog);
         setDataHolder(res.data.result.auditLog);
         settotalPage(
@@ -53,20 +51,18 @@ const LogTable = () => {
               ) +
               '"}'
           );
-          if (Object.keys(temp).length > 1) {
-            filterdate(temp, res.data.result.auditLog);
-          } else {
-            filterUsers(
-              Object.keys(temp)[0],
-              temp[Object.keys(temp)],
-              res.data.result.auditLog
-            );
-          }
-          filterApplication(
-            Object.keys(temp)[0],
-            temp[Object.keys(temp)],
-            res.data.result.auditLog
+          console.log(temp, "urldata");
+          handleFilter(temp, res.data.result.auditLog);
+        } else {
+          setDatas(res.data.result.auditLog);
+          setTotalData(res.data.result.auditLog);
+          settotalPage(
+            Array.from(
+              { length: Math.ceil(res.data.result.auditLog.length / 10) },
+              (v, i) => i + 1
+            )
           );
+          getCount(1, res.data.result.auditLog);
         }
       })
       .catch((err) => {
@@ -84,9 +80,9 @@ const LogTable = () => {
       setcurrentPage(id);
       setDatas(temp);
     }
-    // } else {
-    //   setDatas([]);
-    // }
+    if (data.length === 0) {
+      setDatas([]);
+    }
   };
 
   const sort = (id) => {
@@ -132,76 +128,85 @@ const LogTable = () => {
     }
   };
 
-  const filterUsers = async (filterby, search, urlData = []) => {
-    const temp = urlData.length === 0 ? dataHolder : urlData;
-    search = search.trim().toLowerCase();
-    if (search !== "") {
-      const data = temp.filter((ele) => {
-        if (ele[filterby] && ele[filterby].toLowerCase().includes(search)) {
-          return ele;
-        }
-      });
-      setTotalData(data);
-      settotalPage(
-        Array.from({ length: Math.ceil(data.length / 10) }, (v, i) => i + 1)
-      );
-      getCount(1, data);
-    } else {
-      setTotalData(temp);
-      settotalPage(
-        Array.from({ length: Math.ceil(temp.length / 10) }, (v, i) => i + 1)
-      );
-      getCount(1, temp);
+  const handleFilter = (data, urlData = []) => {
+    let temp = urlData.length === 0 ? dataHolder : urlData;
+    //actionType
+    if (data.actionType) {
+      console.log("actiontype");
+      let search = data.actionType.trim().toLowerCase();
+      if (search !== "") {
+        temp = temp.filter((ele) => {
+          if (
+            ele["actionType"] &&
+            ele["actionType"].toLowerCase().includes(search)
+          ) {
+            return ele;
+          }
+        });
+      }
     }
-  };
-  const filterApplication = async (filterby, search, urlData = []) => {
-    const temp = urlData.length === 0 ? dataHolder : urlData;
-    search = search.trim();
-    if (search !== "") {
-      const data = temp.filter((ele) => {
-        if (ele[filterby] && ele[filterby].toString().includes(search)) {
-          return ele;
-        }
-      });
-      setTotalData(data);
-      settotalPage(
-        Array.from({ length: Math.ceil(data.length / 10) }, (v, i) => i + 1)
-      );
-      getCount(1, data);
-    } else {
-      setTotalData(temp);
-      settotalPage(
-        Array.from({ length: Math.ceil(temp.length / 10) }, (v, i) => i + 1)
-      );
-      getCount(1, temp);
+    //applicationType
+    if (data.applicationType) {
+      console.log("applicationtype");
+      let search = data.applicationType.trim().toLowerCase();
+      if (search !== "") {
+        temp = temp.filter((ele) => {
+          if (
+            ele["applicationType"] &&
+            ele["applicationType"].toLowerCase().includes(search)
+          ) {
+            return ele;
+          }
+        });
+        console.log(temp, "193");
+      }
     }
-  };
-  const filterdate = async (date, urlData = true) => {
-    const dateData = urlData === true ? dataHolder : urlData;
-    if (date.start !== "" && date.end !== "") {
-      const start = new Date(date.start).getTime();
-      const end = new Date(date.end).getTime();
-
-      const data = dateData.filter((ele) => {
+    //appId
+    if (data.applicationId) {
+      console.log("applicationtyid");
+      let search = data.applicationId;
+      if (search !== "") {
+        temp = temp.filter((ele) => {
+          if (
+            ele["applicationId"] &&
+            ele["applicationId"].toString().includes(search)
+          ) {
+            return ele;
+          }
+        });
+      }
+    }
+    //Startdate
+    if (data.search && data.search?.start !== "") {
+      console.log("startdate");
+      const start = new Date(data.search.start).getTime();
+      temp = temp.filter((ele) => {
         if (ele["creationTimestamp"]) {
-          const temp = new Date(ele["creationTimestamp"]).getTime();
-          if (temp >= start && temp <= end) {
+          const date = new Date(ele["creationTimestamp"]).getTime();
+          if (date >= start) {
             return ele;
           }
         }
       });
-      setTotalData(data);
-      settotalPage(
-        Array.from({ length: Math.ceil(data.length / 10) }, (v, i) => i + 1)
-      );
-      getCount(1, data);
-    } else {
-      setTotalData(dateData);
-      settotalPage(
-        Array.from({ length: Math.ceil(dateData.length / 10) }, (v, i) => i + 1)
-      );
-      getCount(1, dateData);
     }
+    //Enddate
+    if (data.search && data.search?.end !== "") {
+      console.log("end");
+      const end = new Date(data.search.end).getTime();
+      temp = temp.filter((ele) => {
+        if (ele["creationTimestamp"]) {
+          const date = new Date(ele["creationTimestamp"]).getTime();
+          if (date <= end) {
+            return ele;
+          }
+        }
+      });
+    }
+    setTotalData(temp);
+    settotalPage(
+      Array.from({ length: Math.ceil(temp.length / 10) }, (v, i) => i + 1)
+    );
+    getCount(1, temp);
   };
   return (
     <Fragment>
@@ -212,9 +217,7 @@ const LogTable = () => {
               <FilterData
                 datas={datas}
                 apiData={apiData}
-                filterUsers={filterUsers}
-                filterdate={filterdate}
-                filterApplication={filterApplication}
+                handleFilter={handleFilter}
               />
             </div>
             <div className="p-4 m-10 !important">
