@@ -1,6 +1,6 @@
 This project is deployed to below link:
 
-### https://joyful-snickerdoodle-358d72.netlify.app/
+### https://fluffy-melomakarona-946e4e.netlify.app/
 
 Steps to run project:
 
