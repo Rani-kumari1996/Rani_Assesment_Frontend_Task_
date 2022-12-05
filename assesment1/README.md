@@ -1,6 +1,6 @@
 This project is deployed to below link:
 
-### https://fluffy-melomakarona-946e4e.netlify.app/
+### https://beamish-dango-8a6d25.netlify.app/
 
 Steps to run project:
 
