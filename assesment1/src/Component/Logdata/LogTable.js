@@ -130,9 +130,9 @@ const LogTable = () => {
 
   const handleFilter = (data, urlData = []) => {
     let temp = urlData.length === 0 ? dataHolder : urlData;
+    console.log(temp, data, "133");
     //actionType
     if (data.actionType) {
-      console.log("actiontype");
       let search = data.actionType;
       if (search !== "") {
         temp = temp.filter((ele) => {
@@ -144,7 +144,6 @@ const LogTable = () => {
     }
     //applicationType
     if (data.applicationType) {
-      console.log("applicationtype");
       let search = data.applicationType;
       if (search !== "") {
         temp = temp.filter((ele) => {
@@ -152,16 +151,17 @@ const LogTable = () => {
             return ele;
           }
         });
-        console.log(temp, "193");
       }
     }
     //appId
     if (data.applicationId) {
-      console.log("applicationtyid");
       let search = data.applicationId;
       if (search !== "") {
         temp = temp.filter((ele) => {
-          if (ele["applicationId"] && ele["applicationId"] === search) {
+          if (
+            ele["applicationId"] &&
+            ele["applicationId"].toString().includes(search)
+          ) {
             return ele;
           }
         });
