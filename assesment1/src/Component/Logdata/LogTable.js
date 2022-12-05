@@ -221,7 +221,7 @@ const LogTable = () => {
               />
             </div>
             <div className="p-4 m-10 !important">
-              <Table striped class="m-10">
+              <Table striped className="m-10">
                 <thead>
                   <tr>
                     <th>

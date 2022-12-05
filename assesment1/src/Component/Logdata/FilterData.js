@@ -79,12 +79,12 @@ const FilterData = (props) => {
           <Label>{"ActionType"}</Label>
           <select
             data-testid="select-toogle"
-            value={actionType}
+            defaultValue={actionType}
             onChange={(e) => setActionType(e.target.value)}
             className="option1"
           >
             <option value="Select ActionType">Select ActionType</option>
-            <option value="none" selected disabled hidden>
+            <option value="none" disabled hidden>
               {actionSearch}
             </option>{" "}
             {props.apiData &&
@@ -100,14 +100,14 @@ const FilterData = (props) => {
             <Label>{"ApplicationTypes"}</Label>
             <select
               data-testid="select-toogleApp"
-              value={applicationType}
+              defaultValue={applicationType}
               onChange={(e) => setApplicationType(e.target.value)}
               className="option1"
             >
               <option value="Select ApplicationType">
                 Select ApplicationType
               </option>
-              <option value="none" selected disabled hidden>
+              <option value="none" disabled hidden>
                 {applicationSearch}
               </option>{" "}
               {props.apiData &&
@@ -158,11 +158,11 @@ const FilterData = (props) => {
             />
           </FormGroup>
         </Col>
-        <Col class="py-2">
+        <Col className="py-2">
           <button
             data-testid="search-button"
             type="button"
-            class="btn btn-primary my-4"
+            className="btn btn-primary my-4"
             onClick={() => buttonSubmit()}
           >
             Search logger

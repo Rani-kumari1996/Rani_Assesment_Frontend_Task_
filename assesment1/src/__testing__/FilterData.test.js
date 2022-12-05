@@ -53,16 +53,16 @@ it("checking the input field", async () => {
 });
 
 //Button
-it("checking the button field", () => {
-  render(
-    <BrowserRouter>
-      <FilterData />
-    </BrowserRouter>
-  );
+// it("checking the button field", () => {
+//   render(
+//     <BrowserRouter>
+//       <FilterData />
+//     </BrowserRouter>
+//   );
 
-  const submitBtn = screen.getByTestId("search-button");
-  fireEvent.click(submitBtn);
-});
+//   const submitBtn = screen.getByTestId("search-button");
+//   fireEvent.click(submitBtn);
+// });
 
 //Select feild for action type
 it("checking the action type", async () => {
