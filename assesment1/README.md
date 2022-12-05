@@ -1,6 +1,6 @@
 This project is deployed to below link:
 
-### https://beamish-dango-8a6d25.netlify.app/
+### https://superb-moonbeam-7f4eb6.netlify.app/
 
 Steps to run project:
 
