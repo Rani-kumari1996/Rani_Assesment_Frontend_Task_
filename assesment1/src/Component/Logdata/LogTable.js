@@ -133,13 +133,10 @@ const LogTable = () => {
     //actionType
     if (data.actionType) {
       console.log("actiontype");
-      let search = data.actionType.trim().toLowerCase();
+      let search = data.actionType;
       if (search !== "") {
         temp = temp.filter((ele) => {
-          if (
-            ele["actionType"] &&
-            ele["actionType"].toLowerCase().includes(search)
-          ) {
+          if (ele["actionType"] && ele["actionType"] === search) {
             return ele;
           }
         });
@@ -148,13 +145,10 @@ const LogTable = () => {
     //applicationType
     if (data.applicationType) {
       console.log("applicationtype");
-      let search = data.applicationType.trim().toLowerCase();
+      let search = data.applicationType;
       if (search !== "") {
         temp = temp.filter((ele) => {
-          if (
-            ele["applicationType"] &&
-            ele["applicationType"].toLowerCase().includes(search)
-          ) {
+          if (ele["applicationType"] && ele["applicationType"] === search) {
             return ele;
           }
         });
@@ -167,10 +161,7 @@ const LogTable = () => {
       let search = data.applicationId;
       if (search !== "") {
         temp = temp.filter((ele) => {
-          if (
-            ele["applicationId"] &&
-            ele["applicationId"].toString().includes(search)
-          ) {
+          if (ele["applicationId"] && ele["applicationId"] === search) {
             return ele;
           }
         });
